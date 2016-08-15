@@ -1,5 +1,6 @@
 import requests
 from urllib.parse import urljoin
+from .sleep import Sleep
 
 
 class BedditClient(object):
@@ -30,3 +31,4 @@ class BedditClient(object):
     def get_sleep(self):
         path = "/api/v1/user/{}/sleep".format(self.user_id)
         r = self._request_with_header(path)
+        return [Sleep(sleep) for sleep in r.json()]
