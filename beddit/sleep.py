@@ -1,13 +1,29 @@
 from datetime import datetime
+from enum import Enum
 from pytz import timezone
+
+
+class SleepStage(Enum):
+    Away = 65
+    Sleep = 83
+    RestlessSleep = 82
+    Awake = 87
+    NoSignal = 78
+    GapInMeasurement = 71
+
+
+class Presence(Enum):
+    Away = 65
+    Present = 80
+    End = 78
 
 
 class Sleep(object):
     class Property(object):
         def __init__(self, properties):
-            for property in properties:
-                score = int(properties[property])
-                setattr(self, property, score)
+            for p in properties:
+                score = int(properties[p])
+                setattr(self, p, score)
 
     def __init__(self, response_object):
         self.timezone = timezone(response_object['timezone'])
@@ -21,3 +37,15 @@ class Sleep(object):
 
         # properties
         self.property = self.Property(response_object['properties'])
+
+        time_value_tracks = response_object['time_value_tracks']
+        self.time_value_tracks = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value) for timestamp, value in time_value_tracks['actigram_epochwise']['items']}
+        self.sleep_event = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): SleepStage(value) for timestamp, value in time_value_tracks['sleep_stages']['items']}
+        self.presence = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): Presence(value) for timestamp, value in time_value_tracks['presence']['items']}
+        self.snoring_episodes = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): value for timestamp, value in time_value_tracks['presence']['items']}
+
+        self.nap_periods = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value) for timestamp, value in time_value_tracks['nap_periods']['items']}
+        self.heart_rate_curve = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value) for timestamp, value in time_value_tracks['heart_rate_curve']['items']}
+        self.sleep_cycles = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value) for timestamp, value in time_value_tracks['sleep_cycles']['items']}
+
+        self.updated = datetime.fromtimestamp(response_object['updated'], tz=self.timezone)
