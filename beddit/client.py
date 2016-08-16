@@ -2,26 +2,29 @@ import requests
 import time
 from urllib.parse import urljoin
 import json
-from enum import Enum
 from .user import User
 from .group import Group
 from .sleep import Sleep
 from .session import Session
 
 
+def auth_required(func):
+    def _is_logged_in(self, *args, **kwargs):
+        if not self.access_token or not self.user_id:
+            raise BedditClient.AuthError('authentication is required')
+        return func(self, *args, **kwargs)
+    return _is_logged_in
+
+
 class BedditClient(object):
     class ArgumentError(BaseException):
         pass
 
-    class UserResponseError(BaseException, Enum):
-        NoSuchUser = 400
-        EmailSendFailed = 500
+    class AuthError(BaseException):
+        pass
 
-    class GroupResponseError(BaseException, Enum):
-        InviteCodeNotFound = 'invite_code_not_found'
-        GroupNotFound = 'group_not_found'
-        EmailNotFound = 'email_not_found'
-        AlreadyMember = 'already_member'
+    class APIError(BaseException):
+        pass
 
     BASE_URL = 'https://cloudapi.beddit.com'
     access_token = None
@@ -70,11 +73,13 @@ class BedditClient(object):
                          headers=self._headers)
         return r
 
+    @auth_required
     def get_sleeps(self):
         path = "/api/v1/user/{}/sleep".format(self.user_id)
         r = self._get_with_auth(path)
         return [Sleep(sleep) for sleep in r.json()]
 
+    @auth_required
     def get_sessions(self, start=None, end=None, updated_after=None):
         params = {}
 
@@ -97,9 +102,12 @@ class BedditClient(object):
     def reset_password(email):
         path = "/api/v1/user/password_reset"
         r = requests.post(path, data={'email': email})
-        if r.status_code != 200:
-            raise BedditClient.UserResponseError(r.status_code)
+        if r.status_code == 200:
+            return True
+        else:
+            raise BedditClient.APIError(r.status_code)
 
+    @auth_required
     def get_user(self, user_id=None):
         if not user_id:
             user_id = self.user_id
@@ -109,8 +117,9 @@ class BedditClient(object):
         if r.status_code == 200:
             return User(r.json())
         else:
-            raise BedditClient.UserResponseError(r.status_code)
+            raise BedditClient.APIError(r.json()['description'])
 
+    @auth_required
     def update_user(self, user_id=None, **params):
         if not user_id:
             user_id = self.user_id
@@ -120,8 +129,9 @@ class BedditClient(object):
         if r.status_code == 200:
             return User(r.json())
         else:
-            raise BedditClient.UserResponseError(r.status_code)
+            raise BedditClient.APIError(r.json()['description'])
 
+    @auth_required
     def get_groups(self, user_id=None):
         if not user_id:
             user_id = self.user_id
@@ -131,8 +141,9 @@ class BedditClient(object):
         if r.status_code == 200:
             return [Group(group) for group in r.json()]
         else:
-            raise BedditClient.UserResponseError(r.status_code)
+            raise BedditClient.APIError(r.json()['description'])
 
+    @auth_required
     def invite_to_group(self, email, group_id=None):
         if group_id:
             path = "/api/v1/group/{}/invite".format(group_id)
@@ -143,18 +154,22 @@ class BedditClient(object):
         if r.status_code == 200:
             return [Group(group) for group in r.json()]
         elif r.status_code == 400:
-            raise BedditClient.GroupResponseError(r.json()['code'])
+            raise BedditClient.APIError(r.json()['code'])
 
+    @auth_required
     def accept_group_invite(self, group_id, invite_code):
         path = '/api/v1/group/{}/invite/{}/invite'.format(group_id, invite_code)
         r = self._post_with_auth(path)
-        if r.status_code == 404:
-            BedditClient.GroupResponseError.InviteCodeNotFound
+        if r.status_code == 200:
+            return True
+        else:
+            raise BedditClient.APIError(r.json()['code'])
 
+    @auth_required
     def remove_group_invite(self, group_id, invite_code):
         path = '/api/v1/group/{}/invite/{}/remove'.format(group_id, invite_code)
         r = self._post_with_auth(path)
         if r.status_code == 200:
             return [Group(group) for group in r.json()]
         else:
-            raise
+            raise BedditClient.APIError(r.json()['code'])
