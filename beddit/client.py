@@ -27,18 +27,23 @@ class BedditClient(object):
     access_token = None
     user_id = None
 
-    def __init__(self, username, password):
-        payload = {
-            'grant_type': 'password',
-            'username': username,
-            'password': password
-        }
-        endpoint = urljoin(self.BASE_URL, '/api/v1/auth/authorize')
-        r = requests.post(endpoint, data=payload)
-        if r.status_code == 200:
-            response_object = r.json()
-            self.access_token = response_object['access_token']
-            self.user_id = response_object['user']
+    def __init__(self, username = None, password = None, access_token = None):
+        if access_token:
+            self.access_token = access_token
+        elif username and password:
+            payload = {
+                'grant_type': 'password',
+                'username': username,
+                'password': password
+            }
+            endpoint = urljoin(self.BASE_URL, '/api/v1/auth/authorize')
+            r = requests.post(endpoint, data=payload)
+            if r.status_code == 200:
+                response_object = r.json()
+                self.access_token = response_object['access_token']
+                self.user_id = response_object['user']
+        else:
+            raise BedditClient.ArgumentError('you must either use the access_token or both username and password')
 
     @property
     def _headers(self):
@@ -106,7 +111,7 @@ class BedditClient(object):
         else:
             raise BedditClient.UserResponseError(r.status_code)
 
-    def update_user(self, user_id, **params):
+    def update_user(self, user_id=None, **params):
         if not user_id:
             user_id = self.user_id
 
