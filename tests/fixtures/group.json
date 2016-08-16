@@ -1,0 +1,28 @@
+{
+  "id":1234,
+  "created":1371472503.646541,
+  "members":[
+    {
+      "updated":1471356194.0,
+      "weight":60.0,
+      "height":175.0,
+      "sleep_time_goal":27000.0,
+      "tip_audiences":[
+        "general"
+      ],
+      "sex":null,
+      "id":10000,
+      "name":"John Doe",
+      "created":1468327763.0,
+      "date_of_birth":"1990-01-01",
+      "email":"beddit@example.com"
+    }
+  ],
+  "pending_invites":[
+    {
+      "created":1371472503.646541,
+      "created_by":132,
+      "email":"example@beddit.com"
+    }
+  ]
+}
