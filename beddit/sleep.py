@@ -53,5 +53,3 @@ class Sleep(object):
                                  for timestamp, value in time_value_tracks['heart_rate_curve']['items']}
         self.sleep_cycles = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value)
                              for timestamp, value in time_value_tracks['sleep_cycles']['items']}
-
-        self.updated = datetime.fromtimestamp(response_object['updated'], tz=self.timezone)

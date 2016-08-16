@@ -8,7 +8,7 @@ from beddit.group import Group
 BASE_DIR = os.path.dirname(__file__)
 
 
-class UserTest(unittest.TestCase):
+class GroupTest(unittest.TestCase):
     @property
     def group_response(self):
         return json.load(open(os.path.join(BASE_DIR, 'fixtures/group.json')))
