@@ -3,6 +3,7 @@ from enum import Enum
 
 
 class Sex(Enum):
+    Unknown = None
     Male = 'male'
     Female = 'female'
 
