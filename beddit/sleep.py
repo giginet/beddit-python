@@ -27,8 +27,7 @@ class Sleep(object):
 
     def __init__(self, response_object):
         self.timezone = timezone(response_object['timezone'])
-        self.date = datetime.strptime(response_object['date'], '%Y-%m-%d')
-        self.date = self.date.replace(tzinfo=self.timezone)
+        self.date = datetime.strptime(response_object['date'], '%Y-%m-%d').replace(tzinfo=self.timezone)
         self.start = datetime.fromtimestamp(response_object['start_timestamp'], tz=self.timezone)
         self.end = datetime.fromtimestamp(response_object['end_timestamp'], tz=self.timezone)
         self.session_range_start = datetime.fromtimestamp(response_object['session_range_start'], tz=self.timezone)
@@ -39,13 +38,20 @@ class Sleep(object):
         self.property = self.Property(response_object['properties'])
 
         time_value_tracks = response_object['time_value_tracks']
-        self.time_value_tracks = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value) for timestamp, value in time_value_tracks['actigram_epochwise']['items']}
-        self.sleep_event = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): SleepStage(value) for timestamp, value in time_value_tracks['sleep_stages']['items']}
-        self.presence = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): Presence(value) for timestamp, value in time_value_tracks['presence']['items']}
-        self.snoring_episodes = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): value for timestamp, value in time_value_tracks['presence']['items']}
+        self.actigram = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value)
+                         for timestamp, value in time_value_tracks['actigram_epochwise']['items']}
+        self.sleep_event = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): SleepStage(value)
+                            for timestamp, value in time_value_tracks['sleep_stages']['items']}
+        self.presence = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): Presence(value)
+                         for timestamp, value in time_value_tracks['presence']['items']}
+        self.snoring_episodes = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): value
+                                 for timestamp, value in time_value_tracks['presence']['items']}
 
-        self.nap_periods = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value) for timestamp, value in time_value_tracks['nap_periods']['items']}
-        self.heart_rate_curve = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value) for timestamp, value in time_value_tracks['heart_rate_curve']['items']}
-        self.sleep_cycles = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value) for timestamp, value in time_value_tracks['sleep_cycles']['items']}
+        self.nap_periods = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value)
+                            for timestamp, value in time_value_tracks['nap_periods']['items']}
+        self.heart_rate_curve = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value)
+                                 for timestamp, value in time_value_tracks['heart_rate_curve']['items']}
+        self.sleep_cycles = {datetime.fromtimestamp(float(timestamp), tz=self.timezone): float(value)
+                             for timestamp, value in time_value_tracks['sleep_cycles']['items']}
 
         self.updated = datetime.fromtimestamp(response_object['updated'], tz=self.timezone)
