@@ -16,6 +16,10 @@ def auth_required(func):
     return _is_logged_in
 
 
+def datetime_to_timestamp(datetime):
+    return time.mktime(datetime.timetuple())
+
+
 class BedditClient(object):
     class ArgumentError(BaseException):
         pass
@@ -74,17 +78,29 @@ class BedditClient(object):
         return r
 
     @auth_required
-    def get_sleeps(self):
+    def get_sleeps(self, start=None, end=None, updated_after=None, limit=None, reverse=False):
+        params = {}
+        if start:
+            params['start_date'] = start.strftime('%Y-%m-%d')
+        if end:
+            params['end_date'] = end.strftime('%Y-%m-%d')
+        if updated_after:
+            params['updated_after'] = updated_after.timestamp()
+        if limit:
+            params['limit'] = limit
+        if reverse:
+            params['reverse'] = 'yes'
+
         path = "/api/v1/user/{}/sleep".format(self.user_id)
-        r = self._get_with_auth(path)
-        return [Sleep(sleep) for sleep in r.json()]
+        r = self._get_with_auth(path, params=params)
+        if r.status_code == 200:
+            return [Sleep(sleep) for sleep in r.json()]
+        else:
+            raise BedditClient.APIError(r.json()['description'])
 
     @auth_required
     def get_sessions(self, start=None, end=None, updated_after=None):
         params = {}
-
-        def datetime_to_timestamp(datetime):
-            return time.mktime(datetime.timetuple())
 
         if updated_after and not start and not end:
             params['updated_after'] = datetime_to_timestamp(updated_after)
@@ -96,7 +112,10 @@ class BedditClient(object):
 
         path = "/api/v1/user/{}/session".format(self.user_id)
         r = self._get_with_auth(path, params=params)
-        return [Session(session) for session in r.json()]
+        if r.status_code == 200:
+            return [Session(session) for session in r.json()]
+        else:
+            raise BedditClient.APIError(r.json()['description'])
 
     @staticmethod
     def reset_password(email):
