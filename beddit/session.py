@@ -9,6 +9,12 @@ class SensorStatus(Enum):
     Unclear = 3
 
 
+class SampledTrack(object):
+    def __init__(self, obj):
+        self.samples_per_frame = obj['samples_per_frame']
+        self.data_url = obj.get('data_url', None)
+
+
 class Session(object):
     def __init__(self, response_object):
         self.timezone = timezone(response_object['timezone'])
@@ -16,20 +22,12 @@ class Session(object):
         self.start = datetime.fromtimestamp(response_object['start_timestamp'], tz=self.timezone)
         self.end = datetime.fromtimestamp(response_object['end_timestamp'], tz=self.timezone)
 
-        self.hardware = None
-        if 'hardware' in response_object:
-            self.hardware = response_object["hardware"]
+        self.hardware = response_object.get("hardware", None)
 
         self.software = response_object["software"]
-
-        self.frame_length = None
-        if 'frame_length' in response_object:
-            self.frame_length = response_object['frame_length']
-
-        self.error_code = response_object['error_code']
-
-        if 'sampled_tracks' in response_object:
-            pass
+        self.frame_length = response_object.get("frame_length", None)
+        self.error_code = response_object.get("error_code", None)
+        self.sampled_tracks = [SampledTrack(obj) for obj in response_object.get('sampled_tracks', [])]
 
         time_value_tracks = response_object['time_value_tracks']
 
@@ -44,7 +42,7 @@ class Session(object):
                          for timestamp, v in time_value_tracks[name]['items']}
                 setattr(self, name, value)
             else:
-                setattr(self, name, None)
+                setattr(self, name, [])
         parse('respiration_cycle_amplitudes')
         parse('heartbeat')
         parse('heart_rate')
