@@ -22,13 +22,13 @@ def readlist(filename):
 
 def requirements():
     requires = readlist('requirements.txt')
-    if sys.version < ('3', '4'):
+    if sys.version_info < (3, 4):
         requires.append('enum34')
     return requires
 
 
 def requirements_test():
-    if sys.version < ('3'):
+    if sys.version_info < (3, 0):
         return ['mock']
     return []
 
