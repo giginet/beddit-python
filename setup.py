@@ -61,6 +61,7 @@ setup(
     include_package_data=True,
     package_data={
         '': ['README.rst',
+             'LICENSE.rst',
              'requirements.txt',
              'requirements-test.txt'],
     },
