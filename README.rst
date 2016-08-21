@@ -1,9 +1,17 @@
-# beddit-python
+beddit-python
+============================
 
-API Client for [Beddit](https://www.beddit.com) in Python.
+.. image:: https://travis-ci.org/giginet/beddit-python.svg?branch=master :target: https://travis-ci.org/giginet/beddit-python
 
-Read [API Documentation](https://github.com/beddit/beddit-api) for detail.
+API Client for Beddit_ in Python.
 
-## Usage
+.. _Beddit: https://www.beddit.com
+
+Read `API Documentation`_ for detail.
+
+.. _API Documentation: https://github.com/beddit/beddit-api
+
+Usage
+--------------
 
 TBD
