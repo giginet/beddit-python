@@ -1,8 +1,10 @@
 
 beddit-python
 ============================
-.. image:: https://travis-ci.org/giginet/beddit-python.svg?branch=master :target: https://travis-ci.org/giginet/beddit-python
-.. image:: https://coveralls.io/repos/github/giginet/beddit-python/badge.svg?branch=master :target: https://coveralls.io/github/giginet/beddit-python?branch=master
+.. image:: https://travis-ci.org/giginet/beddit-python.svg?branch=master
+    :target: https://travis-ci.org/giginet/beddit-python
+.. image:: https://coveralls.io/repos/github/giginet/beddit-python/badge.svg?branch=master 
+    :target: https://coveralls.io/github/giginet/beddit-python?branch=master
 
 API Client for Beddit_ in Python.
 
