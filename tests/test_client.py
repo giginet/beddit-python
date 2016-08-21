@@ -2,10 +2,7 @@ import unittest
 import os
 import json
 import datetime
-try:
-    from unittest.mock import patch, Mock
-except ImportError:
-    from mock import patch, Mock
+from tests.compatibility import patch, Mock
 from beddit.client import BedditClient
 from beddit.sleep import Sleep
 from beddit.session import Session

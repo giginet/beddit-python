@@ -1,14 +1,11 @@
 import requests
 import time
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
 import json
 from .user import User
 from .group import Group
 from .sleep import Sleep
 from .session import Session
+from .compatibility import urljoin
 
 
 def auth_required(func):

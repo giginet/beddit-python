@@ -20,6 +20,18 @@ def readlist(filename):
     return list(rows)
 
 
+def requirements():
+    requires = readlist('requirements.txt')
+    if sys.version < ('3', '4'):
+        requires.append('enum34')
+    return requires
+
+
+def requirements_test():
+    if sys.version < ('3'):
+        return ['mock']
+    return []
+
 setup(
     name=NAME,
     version=VERSION,
@@ -53,7 +65,7 @@ setup(
              'requirements-test.txt'],
     },
     zip_safe=True,
-    install_requires=readlist('requirements.txt'),
+    install_requires=requirements(),
     test_suite='tests',
-    tests_require=readlist('requirements-test.txt'),
+    tests_require=requirements_test(),
 )
