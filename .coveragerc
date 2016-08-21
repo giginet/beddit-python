@@ -1,0 +1,11 @@
+[report]
+include =
+    beddit/*.py
+    tests/*.py
+omit =
+    beddit/__init__.py
+    tests/__init__.py
+    */compatibility.py
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
