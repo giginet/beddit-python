@@ -49,6 +49,12 @@ class BedditClient(object):
                 response_object = r.json()
                 self.access_token = response_object['access_token']
                 self.user_id = response_object['user']
+            else:
+                response = r.json()
+                if response['description']:
+                    raise BedditClient.AuthError(response['description'])
+                else:
+                    raise BedditClient.AuthError('Authentication is failed')
         else:
             raise BedditClient.ArgumentError('you must either use the access_token or both username and password')
 
