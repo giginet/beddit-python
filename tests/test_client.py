@@ -2,7 +2,10 @@ import unittest
 import os
 import json
 import datetime
-from unittest.mock import patch, Mock, MagicMock
+try:
+    from unittest.mock import patch, Mock
+except ImportError:
+    from mock import patch, Mock
 from beddit.client import BedditClient
 from beddit.sleep import Sleep
 from beddit.session import Session
@@ -14,7 +17,7 @@ BASE_DIR = os.path.dirname(__file__)
 
 def authenticated(testcase):
     def _inner(self, *args, **kwargs):
-        response = MagicMock()
+        response = Mock()
         response.json.side_effect = lambda: {'user': 10000, 'access_token': 'dummytoken'}
         response.status_code = 200
         payload = {
@@ -42,7 +45,7 @@ class BedditClientTest(unittest.TestCase):
         self.assertEqual(client.access_token, 'dummytoken')
 
     def test_authentication_error(self):
-        response = MagicMock()
+        response = Mock()
         response.status_code = 400
         response.json.side_effect = lambda: {'description': 'auth_error'}
         with patch('requests.post', return_value=response):
@@ -57,7 +60,7 @@ class BedditClientTest(unittest.TestCase):
         timestamp = 1471761649
 
         endpoint = BedditClient.build_full_path('/api/v1/user/10000/sleep')
-        response = MagicMock()
+        response = Mock()
         response.status_code = 200
         sleep_object = json.load(open(os.path.join(BASE_DIR, 'fixtures/sleep.json')))
         response.json = lambda: sleep_object
@@ -86,7 +89,7 @@ class BedditClientTest(unittest.TestCase):
         timestamp = 1471761649
 
         endpoint = BedditClient.build_full_path('/api/v1/user/10000/session')
-        response = MagicMock()
+        response = Mock()
         response.status_code = 200
         session_object = json.load(open(os.path.join(BASE_DIR, 'fixtures/session.json')))
         response.json = lambda: session_object
@@ -110,7 +113,7 @@ class BedditClientTest(unittest.TestCase):
         self.assertRaises(BedditClient.ArgumentError, client.get_sessions, end=datetime.datetime.now)
 
     def test_reset_password(self):
-        response = MagicMock()
+        response = Mock()
         response.status_code = 200
         with patch('requests.post', return_value=response) as post:
             result = BedditClient.reset_password('new@example.com')
@@ -124,7 +127,7 @@ class BedditClientTest(unittest.TestCase):
         client = self._default_client
 
         endpoint = BedditClient.build_full_path('/api/v1/user/10000')
-        response = MagicMock()
+        response = Mock()
         response.status_code = 200
         user_object = json.load(open(os.path.join(BASE_DIR, 'fixtures/user.json')))
         response.json = lambda: user_object
@@ -140,7 +143,7 @@ class BedditClientTest(unittest.TestCase):
         client = self._default_client
 
         endpoint = BedditClient.build_full_path('/api/v1/user/10000')
-        response = MagicMock()
+        response = Mock()
         response.status_code = 200
         user_object = json.load(open(os.path.join(BASE_DIR, 'fixtures/user.json')))
         response.json = lambda: user_object
@@ -156,7 +159,7 @@ class BedditClientTest(unittest.TestCase):
         client = self._default_client
 
         endpoint = BedditClient.build_full_path('/api/v1/user/10000/group')
-        response = MagicMock()
+        response = Mock()
         response.status_code = 200
         group_object = json.load(open(os.path.join(BASE_DIR, 'fixtures/group.json')))
         response.json = lambda: [group_object]
@@ -172,7 +175,7 @@ class BedditClientTest(unittest.TestCase):
         client = self._default_client
 
         endpoint = BedditClient.build_full_path('/api/v1/group/new/invite')
-        response = MagicMock()
+        response = Mock()
         response.status_code = 200
         group_object = json.load(open(os.path.join(BASE_DIR, 'fixtures/group.json')))
         response.json = lambda: [group_object]
@@ -191,7 +194,7 @@ class BedditClientTest(unittest.TestCase):
         client = self._default_client
 
         endpoint = BedditClient.build_full_path('/api/v1/group/200/member/10000/remove')
-        response = MagicMock()
+        response = Mock()
         response.status_code = 200
         group_object = json.load(open(os.path.join(BASE_DIR, 'fixtures/group.json')))
         response.json = lambda: [group_object]

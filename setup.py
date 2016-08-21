@@ -49,9 +49,11 @@ setup(
     include_package_data=True,
     package_data={
         '': ['README.rst',
-             'requirements.txt'],
+             'requirements.txt',
+             'requirements-test.txt'],
     },
     zip_safe=True,
     install_requires=readlist('requirements.txt'),
     test_suite='tests',
+    tests_require=readlist('requirements-test.txt'),
 )
