@@ -8,7 +8,7 @@ beddit-python
 
 API Client for Beddit_ in Python.
 
-.. _Beddit: https://www.beddit.com
+.. _Beddit: http://www.beddit.com
 
 Read `API Documentation`_ for detail.
 
