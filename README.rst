@@ -40,7 +40,7 @@ List sleep scores per day
 
   sleeps = client.get_sleeps(start=start_date, end=end_date)
   for sleep in sleeps:
-    print(sleep.date.strftime('%Y-%m-%d'), sleep.property.total_sleep_score)
+      print(sleep.date.strftime('%Y-%m-%d'), sleep.property.total_sleep_score)
 
 
 .. code:: txt

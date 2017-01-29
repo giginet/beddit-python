@@ -1,0 +1,54 @@
+{
+  "id" : 1431835725,
+  "start_timestamp" : 1431835725.618702,
+  "end_timestamp" : 1431865087.218702,
+  "timezone" : "America/New_York",
+  "hardware" : "1.0/39bc22e bl:1.1 hw:1",
+  "software" : "1.11.0 (101)",
+  "frame_length" : 0.2,
+  "error_code" : 0,
+  "sampled_tracks" : {
+    "normal" : {
+      "samples_per_frame" : 28,
+      "data_url" : "https://bedditcloud-sleepdata...",
+      "data_type" : "uint16"
+    },
+    "noise" : {
+      "samples_per_frame" : 2,
+      "data_url" : "https://bedditcloud-sleepdata...",
+      "data_type" : "float32"
+    }
+  },
+  "time_value_tracks" : {
+    "actigram" : {
+      "value_data_type" : "float32",
+      "items" : [
+        [0, 29973.82]
+      ]
+    },
+    "snoring_events" : {
+      "value_data_type" : "float32",
+      "items" : []
+    },
+    "respiration_cycles" : {
+      "value_data_type" : "float32",
+      "items" : [
+        [40.3, 4.1]
+      ]
+    },
+    "heart_rate" : {
+      "value_data_type" : "float32",
+      "items" : [
+        [60, 64.59961]
+      ]
+    },
+    "sensor_status" : {
+      "value_data_type" : "uint8",
+      "items" : [
+        [58.4, 1],
+        [29316.8, 1]
+      ]
+    }
+  },
+  "updated" : 1371482503.646541
+}

@@ -26,7 +26,7 @@ class SessionTest(unittest.TestCase):
         self.assertEqual(session.hardware, raw['hardware'])
         self.assertEqual(session.frame_length, raw['frame_length'])
         self.assertEqual(session.error_code, raw['error_code'])
-        self.assertEqual(session.sampled_tracks, [])
+        self.assertEqual(session.sampled_tracks, {})
 
         self.assertEqual(len(session.respiration_cycle_amplitudes), 7976)
         self.assertEqual(len(session.heartbeat), 5963)
@@ -40,3 +40,16 @@ class SessionTest(unittest.TestCase):
         self.assertEqual(len(session.activity_segment_length), 303)
         self.assertEqual(len(session.high_activity_intervals), 113)
         self.assertEqual(len(session.activity_segment_variation), 303)
+
+    def test_sampled_tracks(self):
+        response = json.load(open(os.path.join(BASE_DIR, 'fixtures/session_sample.json')))
+        session = Session(response)
+        tracks = session.sampled_tracks
+        self.assertEqual(tracks['normal'].samples_per_frame, 28)
+        self.assertEqual(tracks['normal'].data_url, 'https://bedditcloud-sleepdata...')
+        self.assertEqual(tracks['normal'].data_type, 'uint16')
+
+        self.assertEqual(tracks['noise'].samples_per_frame, 2)
+        self.assertEqual(tracks['noise'].data_url, 'https://bedditcloud-sleepdata...')
+        self.assertEqual(tracks['noise'].data_type, 'float32')
+
