@@ -13,6 +13,7 @@ class SampledTrack(object):
     def __init__(self, obj):
         self.samples_per_frame = obj['samples_per_frame']
         self.data_url = obj.get('data_url', None)
+        self.data_type = obj['data_type']
 
 
 class Session(object):
@@ -27,7 +28,7 @@ class Session(object):
         self.software = response_object["software"]
         self.frame_length = response_object.get("frame_length", None)
         self.error_code = response_object.get("error_code", None)
-        self.sampled_tracks = [SampledTrack(obj) for obj in response_object.get('sampled_tracks', [])]
+        self.sampled_tracks = {key: SampledTrack(value) for key, value in response_object.get('sampled_tracks', {}).items()}
 
         time_value_tracks = response_object['time_value_tracks']
 
