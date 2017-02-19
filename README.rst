@@ -49,6 +49,23 @@ List sleep scores per day
   2016-07-02 92
   ....
 
+Get user information
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+  import os
+  from beddit.client import BedditClient
+
+  client = BedditClient(os.environ.get('BEDDIT_USERNAME'), os.environ.get('BEDDIT_PASSWORD'))
+
+  user = client.get_user()
+  print(user.name)
+  print(user.height)
+  print(user.weight)
+
+
+
 Supported Python
 ------------------------
 
